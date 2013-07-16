@@ -1,0 +1,16 @@
+version = '1.0-SNAPSHOT'
+group = 'com.ecovate'
+
+apply plugin: 'groovy'
+
+dependencies {
+  compile gradleApi()
+  compile localGroovy()
+  compile 'org.ajoberstar:gradle-git:0.4.0'
+}
+
+install.dependsOn build
+
+task wrapper(type: Wrapper) {
+  distributionUrl = 'https://artifactory.ecovate.com/artifactory/plugins-public/readytalk-gradlew/0.3.0/readytalk-gradlew-0.3.0-bin.zip'
+}
