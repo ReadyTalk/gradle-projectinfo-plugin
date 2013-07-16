@@ -7,6 +7,10 @@ that contains git scm information.
 
     apply plugin: 'projectinfo'
 
+You can then add a dependsOn relationship to your `war` or `jar` task to the `projectInfo` task.
+
+    war.dependsOn projectInfo
+
 Optionally, you may configure the name of the project injected into the
 `project.properties` file, or set the git repository URL using the `projectInfo`
 configuration Closure.
