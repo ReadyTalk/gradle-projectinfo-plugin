@@ -1,4 +1,4 @@
-package com.ecovate
+package com.readytalk
 
 
 class ProjectInfoExtension {
