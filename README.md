@@ -1,5 +1,7 @@
 # gradle-projectinfo-plugin
 
+[![Build Status](https://drone.io/github.com/ReadyTalk/gradle-plugins/status.png)](https://drone.io/github.com/ReadyTalk/gradle-plugins/latest)
+
 This project provides a file called `project.properties` on your classpath (`sourceSets.main.output.resourcesDir`) that contains git and project information.
 
 ## Usage
