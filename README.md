@@ -1,10 +1,10 @@
-# Project Info Gradle Plugin
+# gradle-projectinfo-plugin
 
 This project provides a file called `project.properties` on your classpath (`sourceSets.main.output.resourcesDir`) that contains git and project information.
 
 ## Usage
 
-    apply plugin: 'projectinfo'
+    apply plugin: 'projectInfo'
 
 The plugin will ensure that the `jar` or `war` plugin has already been applied.
 
@@ -40,3 +40,4 @@ This project will only re-generate the properties file if the latest commit hash
 ## Contributing
 
 If you find this useful and would like to make it more generic or add additional functionality, please submit a pull request, or open an issue!
+>>>>>>> d83bf5bbe1d3c82bea99b58be8fbe02f7730128e
