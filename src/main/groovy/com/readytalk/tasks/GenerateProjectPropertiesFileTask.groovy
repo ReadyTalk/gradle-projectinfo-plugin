@@ -1,10 +1,11 @@
 package com.readytalk.tasks
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevCommit
-import org.eclipse.jgit.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.gradle.api.DefaultTask
+import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
 
 class GenerateProjectPropertiesFileTask extends DefaultTask {
@@ -26,12 +27,17 @@ class GenerateProjectPropertiesFileTask extends DefaultTask {
         return false
       }
 
-      def props = new ConfigSlurper().parse(projectPropsFile.toURI().toURL())
+      Properties properties = new Properties();
+      properties.load(projectPropsFile.newReader());
       def log = git.log().setMaxCount(1).call()
       def commit = log.iterator().next()
-      return props['REVISION'] == commit.id.name
+      def revEqual = properties['REVISION'].equals(commit.id.name)
+      def curProjectName = project.projectInfo.projectName ?: project.name
+      def curRepoUrl = project.projectInfo.repoUrl ?: ""
+      def projectNameEqual = properties['PROJECT_NAME'].equals(curProjectName)
+      def urlEqual = properties['URL'].equals(curRepoUrl)
+      return revEqual && projectNameEqual && urlEqual
     }
-
   }
 
   @TaskAction
@@ -48,20 +54,17 @@ class GenerateProjectPropertiesFileTask extends DefaultTask {
       properties['REVISION'] = commit.getId().getName()
       properties['AUTHOR'] = commit.authorIdent.name
       properties['EMAIL'] = commit.authorIdent.emailAddress
-      properties['DATE'] = new Date(commit.commitTime * 1000L)
+      properties['DATE'] = new Date(commit.commitTime * 1000L).toString()
       properties['MESSAGE'] = commit.shortMessage
       properties['BRANCH'] = repo.getFullBranch()
-      properties['URL'] = project.projectInfo.repoUrl
+      properties['URL'] = project.projectInfo.repoUrl ?: ""
     }
 
     if (!destDir.exists()) {
       destDir.mkdirs()
     }
 
-    def slurper = new ConfigSlurper().parse(properties)
-    new File(destDir, destFile).withWriter { writer ->
-      slurper.writeTo(writer)
-    }
+    properties.store(new File(destDir, destFile).newWriter(), null)
   }
 
   private FileRepository getRepository() {

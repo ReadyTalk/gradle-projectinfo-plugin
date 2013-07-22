@@ -13,24 +13,24 @@ class GitInfoPluginTest {
   @Test(expected = GradleException)
   public void testApplyNoJavaPlugin() {
     Project project = ProjectBuilder.builder().build()
-    project.apply plugin: 'gitInfo'
+    project.apply plugin: 'projectInfo'
   }
 
   @Test
   public void testApplyWithJavaPlugin() throws Exception {
     Project project = ProjectBuilder.builder().build()
     project.apply plugin: 'java'
-    project.apply plugin: 'gitInfo'
+    project.apply plugin: 'projectInfo'
 
-    assertTrue(project.tasks.generateGitPropertiesFile instanceof GenerateProjectPropertiesFileTask)
+    assertTrue(project.tasks.generateProjectPropertiesFile instanceof GenerateProjectPropertiesFileTask)
   }
 
   @Test
   public void testApplyWithWarPlugin() throws Exception {
     Project project = ProjectBuilder.builder().build()
     project.apply plugin: 'war'
-    project.apply plugin: 'gitInfo'
+    project.apply plugin: 'projectInfo'
 
-    assertTrue(project.tasks.generateGitPropertiesFile instanceof GenerateProjectPropertiesFileTask)
+    assertTrue(project.tasks.generateProjectPropertiesFile instanceof GenerateProjectPropertiesFileTask)
   }
 }

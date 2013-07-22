@@ -1,15 +1,16 @@
 # Project Info Gradle Plugin
 
-This project provides a file called `project.properties` on your classpath
-that contains git scm information.
+This project provides a file called `project.properties` on your classpath (`sourceSets.main.output.resourcesDir`) that contains git and project information.
 
 ## Usage
 
     apply plugin: 'projectinfo'
 
-You can then add a dependsOn relationship to your `war` or `jar` task to the `projectInfo` task.
+The plugin will ensure that the `jar` or `war` plugin has already been applied.
 
-    war.dependsOn projectInfo
+Then inject the `generateProjectPropertiesFile` task into your build
+
+    war.dependsOn generateProjectPropertiesFile
 
 Optionally, you may configure the name of the project injected into the
 `project.properties` file, or set the git repository URL using the `projectInfo`
@@ -20,8 +21,22 @@ configuration Closure.
       repoUrl = 'custom-project.git'
     }
 
-## Roadmap
+## Details
 
-This is pretty custom tailored to CC projects, but is very open to be
-customizeable in the future.  If you would like to use it or customize further,
-please send a pull request.
+The following properties are placed in the `project.properties` file:
+
+- `PROJECT_NAME`: Defaults to the name of your gradle project, but can be overridden
+- `PROJECT_VERSION`: Version of project as defined by gradle
+- `REVISION`: The SHA-1 git hash of the latest commit on your git repo
+- `AUTHOR`: The name of the last committer
+- `EMAIL`: Email of the last committer
+- `DATE`: Date of the latest commit
+- `MESSAGE`: The 'short' version of the git commit message (up to the first LF)
+- `BRANCH`: The current branch of the repo
+- `URL`: The repository URL (defaults to null)
+
+This project will only re-generate the properties file if the latest commit hash to the repo differs from the one that already exists in the build directory.  This allows UP-TO-DATE checking on your builds.
+
+## Contributing
+
+If you find this useful and would like to make it more generic or add additional functionality, please submit a pull request, or open an issue!
