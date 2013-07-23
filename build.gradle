@@ -1,24 +1,66 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    mavenRepo( name: 'jFrogPlugins', url: 'http://dl.bintray.com/jfrog/jfrog-jars' )
+  }
+
+  dependencies {
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:2.1.0"
+  }
+}
+
+apply plugin: 'artifactory'
 apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+ext {
+  isSnapshot = version.contains('SNAPSHOT')
+}
 
 repositories {
   mavenCentral()
 }
 
-configurations {
-  scm
+artifactory {
+  contextUrl = 'http://oss.jfrog.org'
 }
 
 dependencies {
   compile 'org.eclipse.jgit:org.eclipse.jgit:3.0.0.201306101825-r'
   compile gradleApi()
   compile localGroovy()
-
-  scm 'org.eclipse.jgit:org.eclipse.jgit:3.0.0.201306101825-r'
 }
 
-jar {
-  from { configurations.scm.collect { it.isDirectory() ? it : zipTree(it) } }
-  //manifest { attributes 'Main-Class': 'test.Main' }
+artifactoryPublish { task ->
+  artifactory {
+    publish {
+      repository {
+        repoKey = isSnapshot ? 'oss-snapshot-local' : 'oss-release-local'
+
+        // Need this to enable non deployment builds without credentials
+        gradle.taskGraph.whenReady { taskGraph ->
+          if (taskGraph.hasTask(task)) {
+            username = bintrayUser
+            password = bintrayKey
+          }
+        }
+      }
+    }
+  }
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+}
+
+artifactoryPublish {
+  skip true
 }
 
 task wrapper(type: Wrapper) {
