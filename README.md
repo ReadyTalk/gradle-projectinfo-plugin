@@ -42,4 +42,3 @@ This project will only re-generate the properties file if the latest commit hash
 ## Contributing
 
 If you find this useful and would like to make it more generic or add additional functionality, please submit a pull request, or open an issue!
->>>>>>> d83bf5bbe1d3c82bea99b58be8fbe02f7730128e
