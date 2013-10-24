@@ -69,7 +69,7 @@ class GenerateProjectPropertiesFileTask extends DefaultTask {
 
   private FileRepository getRepository() {
     FileRepositoryBuilder builder = new FileRepositoryBuilder()
-        .setGitDir(new File(project.projectDir, ".git"))
+        .setGitDir(new File(project.rootProject.projectDir, ".git"))
         .readEnvironment()
         .findGitDir()
     Repository repo = builder.build();
